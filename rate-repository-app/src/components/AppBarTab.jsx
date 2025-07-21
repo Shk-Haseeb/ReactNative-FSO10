@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet } from 'react-native';
-import Text from './Text';
+import { Text } from 'react-native';
 import theme from '../theme';
 
 const styles = StyleSheet.create({
