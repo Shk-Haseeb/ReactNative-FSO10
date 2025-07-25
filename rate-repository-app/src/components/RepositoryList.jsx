@@ -1,35 +1,15 @@
 import React, { useState } from 'react';
-import { FlatList, View, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { useDebounce } from 'use-debounce';
 import useRepositories from '../hooks/useRepositories';
-import RepositoryItem from './RepositoryItem';
-import ItemSeparator from './ItemSeparator';
-
-const styles = StyleSheet.create({
-  pickerContainer: {
-    padding: 10,
-    backgroundColor: 'white',
-  },
-});
-
-const RepositoryListHeader = ({ selectedSort, setSelectedSort }) => (
-  <View style={styles.pickerContainer}>
-    <Picker
-      selectedValue={selectedSort}
-      onValueChange={(value) => setSelectedSort(value)}
-    >
-      <Picker.Item label="Latest repositories" value="latest" />
-      <Picker.Item label="Highest rated repositories" value="highest" />
-      <Picker.Item label="Lowest rated repositories" value="lowest" />
-    </Picker>
-  </View>
-);
+import { RepositoryListContainer } from './RepositoryListContainer';
 
 const RepositoryList = () => {
-  const [selectedSort, setSelectedSort] = useState('latest');
+  const [sort, setSort] = useState('latest');
+  const [keyword, setKeyword] = useState('');
+  const [debouncedKeyword] = useDebounce(keyword, 500);
 
-  const getOrderVariables = () => {
-    switch (selectedSort) {
+  const getSortOptions = () => {
+    switch (sort) {
       case 'highest':
         return { orderBy: 'RATING_AVERAGE', orderDirection: 'DESC' };
       case 'lowest':
@@ -39,24 +19,20 @@ const RepositoryList = () => {
     }
   };
 
-  const { repositories } = useRepositories(getOrderVariables());
+  const variables = {
+    ...getSortOptions(),
+    searchKeyword: debouncedKeyword,
+  };
 
-  const repositoryNodes = repositories
-    ? repositories.edges.map((edge) => edge.node)
-    : [];
+  const { repositories } = useRepositories(variables);
 
   return (
-    <FlatList
-      data={repositoryNodes}
-      ItemSeparatorComponent={ItemSeparator}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <RepositoryItem item={item} />}
-      ListHeaderComponent={
-        <RepositoryListHeader
-          selectedSort={selectedSort}
-          setSelectedSort={setSelectedSort}
-        />
-      }
+    <RepositoryListContainer
+      repositories={repositories}
+      sort={sort}
+      setSort={setSort}
+      keyword={keyword}
+      setKeyword={setKeyword}
     />
   );
 };
