@@ -45,9 +45,14 @@ const AppBar = () => {
         </Link>
 
         {isAuthenticated && (
-          <Link to="/create-review" style={{ textDecorationLine: 'none' }}>
-            <AppBarTab title="Create a review" />
-          </Link>
+          <>
+            <Link to="/create-review" style={{ textDecorationLine: 'none' }}>
+              <AppBarTab title="Create a review" />
+            </Link>
+            <Link to="/my-reviews" style={{ textDecorationLine: 'none' }}>
+              <AppBarTab title="My reviews" />
+            </Link>
+          </>
         )}
 
         {isAuthenticated ? (
