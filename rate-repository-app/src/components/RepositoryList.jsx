@@ -12,15 +12,8 @@ const styles = StyleSheet.create({
 const ItemSeparator = () => <View style={styles.separator} />;
 
 const RepositoryList = () => {
-  const { repositories, loading, error } = useRepositories();
-
-  if (loading) {
-    return <Text>Loading repositories...</Text>;
-  }
-
-  if (error) {
-    return <Text>Error loading repositories</Text>;
-  }
+  const { repositories } = useRepositories();
+  const navigate = useNavigate();
 
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
@@ -29,11 +22,13 @@ const RepositoryList = () => {
   return (
     <FlatList
       data={repositoryNodes}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={({ item }) => <RepositoryItem item={item} />}
+      renderItem={({ item }) => (
+        <Pressable onPress={() => navigate(`/repository/${item.id}`)}>
+          <RepositoryItem item={item} />
+        </Pressable>
+      )}
       keyExtractor={(item) => item.id}
     />
   );
 };
-
 export default RepositoryList;

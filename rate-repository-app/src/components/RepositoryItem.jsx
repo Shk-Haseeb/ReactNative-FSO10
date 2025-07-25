@@ -1,6 +1,7 @@
 import { View, StyleSheet, Image } from 'react-native';
 import { Text } from 'react-native';
 import theme from '../theme';
+import * as Linking from 'expo-linking';
 
 const styles = StyleSheet.create({
   container: {
@@ -60,23 +61,23 @@ const Stat = ({ label, value }) => (
   </View>
 );
 
-const RepositoryItem = ({ item }) => (
-  <View style={styles.container} testID="repositoryItem">
-    <View style={styles.topRow}>
-      <Image style={styles.avatar} source={{ uri: item.ownerAvatarUrl }} />
-      <View style={styles.info}>
-        <Text style={styles.fullName}>{item.fullName}</Text>
-        <Text style={styles.description}>{item.description}</Text>
-        <Text style={styles.language}>{item.language}</Text>
-      </View>
+const RepositoryItem = ({ item, showGitHubButton = false }) => {
+  const openGitHub = () => {
+    Linking.openURL(item.url);
+  };
+
+  return (
+    <View style={styles.container} testID="repositoryItem">
+
+      {showGitHubButton && (
+        <Pressable onPress={openGitHub} style={{ marginTop: 12 }}>
+          <Text style={{ color: theme.colors.primary, fontWeight: 'bold' }}>
+            Open in GitHub
+          </Text>
+        </Pressable>
+      )}
     </View>
-    <View style={styles.statsRow}>
-      <Stat label="Stars" value={item.stargazersCount} />
-      <Stat label="Forks" value={item.forksCount} />
-      <Stat label="Reviews" value={item.reviewCount} />
-      <Stat label="Rating" value={item.ratingAverage} />
-    </View>
-  </View>
-);
+  );
+};
 
 export default RepositoryItem;
