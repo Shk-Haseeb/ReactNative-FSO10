@@ -44,14 +44,25 @@ const AppBar = () => {
           <AppBarTab title="Repositories" />
         </Link>
 
+        {isAuthenticated && (
+          <Link to="/create-review" style={{ textDecorationLine: 'none' }}>
+            <AppBarTab title="Create a review" />
+          </Link>
+        )}
+
         {isAuthenticated ? (
           <Pressable onPress={signOut}>
             <AppBarTab title="Sign out" />
           </Pressable>
         ) : (
-          <Link to="/sign-in" style={{ textDecorationLine: 'none' }}>
-            <AppBarTab title="Sign in" />
-          </Link>
+          <>
+            <Link to="/sign-in" style={{ textDecorationLine: 'none' }}>
+              <AppBarTab title="Sign in" />
+            </Link>
+            <Link to="/sign-up" style={{ textDecorationLine: 'none' }}>
+              <AppBarTab title="Sign up" />
+            </Link>
+          </>
         )}
 
         <Link to="/" style={{ textDecorationLine: 'none' }}>
